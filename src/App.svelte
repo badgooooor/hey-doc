@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { chatLogStore } from "./stores";
+  import { chatLogStore, textSpeechStore } from "./stores";
   import Recording from "./components/Recording.svelte";
 
   type DisplayChatLog = {
@@ -10,6 +10,9 @@
   
   let message = ''
   let chatLogs: DisplayChatLog[] = [];
+
+  const unsubscribeTextSpeechStore = textSpeechStore.subscribe(val => message = val);
+  onDestroy(unsubscribeTextSpeechStore)
 
   const unsubscribeChatLogStore = chatLogStore.subscribe(val => chatLogs = val);
   onDestroy(unsubscribeChatLogStore);
