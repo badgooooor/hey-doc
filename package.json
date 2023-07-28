@@ -22,7 +22,6 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
-    "@sveltejs/adapter-auto": "^2.1.0",
-    "chatgpt": "^5.2.5"
+    "@sveltejs/adapter-auto": "^2.1.0"
   }
 }
