@@ -1,4 +1,5 @@
 export type DisplayChatLog = {
   role: string;
-  message: string;
+  content: string;
+  timestamp?: Date;
 };

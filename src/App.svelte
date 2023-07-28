@@ -1,13 +1,9 @@
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { chatLogStore, textSpeechStore } from "./stores";
+  import { chatLogStore, pushChatLog, textSpeechStore } from "./stores";
   import Recording from "./components/Recording.svelte";
+  import type { DisplayChatLog } from "./types";
 
-  type DisplayChatLog = {
-    role: string;
-    message: string;
-  };
-  
   let message = ''
   let chatLogs: DisplayChatLog[] = [];
 
@@ -18,11 +14,10 @@
   onDestroy(unsubscribeChatLogStore);
 
   function onSendMessageClick() {
-    const updatedChatLog: DisplayChatLog[] = [...chatLogs, {
-      role: 'You',
-      message: message
-    }];
-    chatLogStore.set(updatedChatLog)
+    pushChatLog(chatLogs, {
+      role: 'user',
+      content: message
+    })
     message = ''
   }
 </script>
@@ -35,7 +30,7 @@
     <div class="w-4/5">
       <div class="flex flex-col h-64 w-full overflow-auto mb-4 p-2 border-2 border-sky-500 rounded-md shadow">
         {#each chatLogs as chatLog}
-          <p class="break-word mb-2"><span class="font-bold">{chatLog.role}:</span> {chatLog.message}</p>
+          <p class="break-word mb-2"><span class="font-bold">{chatLog.role}:</span> {chatLog.content}</p>
         {/each}
       </div>
       <div class="flex items-center">
