@@ -58,9 +58,19 @@
 
 <div>
   {#if isRecording}
-    <div>Recording</div>
+    <button
+      class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline ml-2"
+      on:click={stopRecording}
+    >
+      Stop
+    </button>
   {/if}
-  <audio controls />
-  <button on:click={startRecording}>Record</button>
-  <button on:click={stopRecording}>Stop</button>
+
+  {#if !isRecording}
+    <button 
+      class="bg-white-500 border-red-500 rounded-md border-2 hover:bg-red-700 hover:text-white hover:bg-red-700 text-red-500 font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline ml-2"
+      on:click={startRecording}
+    >Record
+    </button>
+  {/if}
 </div>

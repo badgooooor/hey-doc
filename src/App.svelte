@@ -38,16 +38,13 @@
           <p class="break-word mb-2"><span class="font-bold">{chatLog.role}:</span> {chatLog.message}</p>
         {/each}
       </div>
-      <div class="">
-        <div>Speech to text</div>
-        <Recording />
-      </div>
       <div class="flex items-center">
         <input 
           bind:value={message} 
           placeholder="Type your message"
           class="shadow grow appearance-none border rounded w-3/5 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         />
+        <Recording />
         <button 
           on:click={onSendMessageClick}
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline ml-2"
