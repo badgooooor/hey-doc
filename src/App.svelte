@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { chatLogStore } from "./stores";
 
   type DisplayChatLog = {
@@ -9,6 +9,33 @@
   
   let message = ''
   let chatLogs: DisplayChatLog[] = [];
+
+  let media: Blob[] = [];
+  let mediaRecorder: MediaRecorder | null = null;
+  onMount(async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+		
+		mediaRecorder = new MediaRecorder(stream);
+		mediaRecorder.ondataavailable = (e) => media.push(e.data)
+		mediaRecorder.onstop = function(){
+			const audio = document.querySelector('audio');
+			const blob = new Blob(media, {'type' : 'audio/ogg; codecs=opus' });
+			media = [];
+      console.log(media)
+			audio.src = window.URL.createObjectURL(blob);
+		}
+  })
+
+  function startRecording(){
+    console.log('starttt')
+		mediaRecorder.start();
+	}
+
+	function stopRecording(){
+    console.log('stoppp')
+
+		mediaRecorder.stop();
+	}
 
   const unsubscribeChatLogStore = chatLogStore.subscribe(val => chatLogs = val);
   onDestroy(unsubscribeChatLogStore);
@@ -33,6 +60,12 @@
         {#each chatLogs as chatLog}
           <p class="break-word mb-2"><span class="font-bold">{chatLog.role}:</span> {chatLog.message}</p>
         {/each}
+      </div>
+      <div class="">
+        <div>Speech to text</div>
+        <audio controls />
+        <button on:click={startRecording}>Record</button>
+        <button on:click={stopRecording}>Stop</button>
       </div>
       <div class="flex items-center">
         <input 
