@@ -1,0 +1,66 @@
+<script lang="ts">
+  import { onMount } from "svelte";
+  import { ENV_OBJ } from "../lib/env";
+  import { textSpeechStore } from "../stores";
+  
+  let media: Blob[] = [];
+  let mediaRecorder: MediaRecorder | null = null;
+  let recordedObjectURL: string | null = null;
+  let recordedBlob: Blob;
+
+  let isRecording: boolean = false;
+
+  onMount(async () => {
+    media = [];
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+		
+    console.log(MediaRecorder.isTypeSupported("audio/webm"))
+		mediaRecorder = new MediaRecorder(stream);
+		mediaRecorder.ondataavailable = (e) => media.push(e.data)
+		mediaRecorder.onstop = function(){
+			const audio = document.querySelector('audio');
+			recordedBlob = new Blob(media, { type: "audio/webm" });
+      recordedObjectURL = window.URL.createObjectURL(recordedBlob)
+			audio.src = recordedObjectURL
+		}
+  })
+
+  function startRecording() {
+		mediaRecorder.start();
+    isRecording = true;
+	}
+
+	function stopRecording() {
+		mediaRecorder.stop();
+    isRecording = false;
+	}
+
+  $: recordedBlob && fetchTextFromSpeech(recordedBlob)
+
+  async function fetchTextFromSpeech(recordedBlob: Blob) {
+    const formData = new FormData()
+    formData.append('model', 'whisper-1')
+    formData.append('file', recordedBlob, 'recording.webm')
+    const res = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${ENV_OBJ.OPENAI_API}`,
+      },
+      body: formData
+    })
+
+    if (res.status === 200) {
+      const text = (await res.json()).text;
+      textSpeechStore.set(text)
+    }
+  }
+</script>
+
+<div>
+  {#if isRecording}
+    <div>Recording</div>
+  {/if}
+  <audio controls />
+  <button on:click={startRecording}>Record</button>
+  <button on:click={stopRecording}>Stop</button>
+</div>
