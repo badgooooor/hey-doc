@@ -5,6 +5,7 @@
   import type { ConversationLog } from "./types";
   import { postConversation } from "./services";
   import ChatLog from "./components/ChatLog.svelte";
+  import { toast } from "@zerodevx/svelte-toast";
 
   let message = ''
   let chatLogs: ConversationLog[] = [];
@@ -46,8 +47,10 @@
     if (initialConversationResponse !== null) {
       conversationStore.set([...chatLogs, {
         role: 'assistant',
-        content: initialConversationResponse.responseText
+        content: initialConversationResponse.responseText.toString(),
       }]);
+
+      assistantVoiceObjectURL = initialConversationResponse.audioBlobObjectURL;
     }
     isUserTurn = true;
   })
@@ -73,11 +76,14 @@
 
   $: assistantVoiceObjectURL && playAssistantVoice();
   function playAssistantVoice() {
-    if (assistantVoiceObjectURL === null) return;
+    try {
+      if (assistantVoiceObjectURL === null) return;
       
-    const audio = document.querySelector('audio');
-    audio.src = assistantVoiceObjectURL;
-    audio.play();
+      const audio = new Audio(assistantVoiceObjectURL);
+      audio.play();
+    } catch(err) {
+      toast.push('Error occured')
+    }
   }
 
   function onSendMessageClick() {
@@ -95,11 +101,6 @@
   </div>
   <div class="flex justify-center items-center h-[calc(100vh-128px)] mx-8 my-8">
     <div class="w-4/5">
-      <!-- <div class="flex flex-col h-64 w-full overflow-auto mb-4 p-2 border-2 border-sky-500 rounded-md shadow">
-        {#each chatLogs as chatLog}
-          <p class="break-word mb-2"><span class="font-bold">{chatLog.role}:</span> {chatLog.content}</p>
-        {/each}
-      </div> -->
       <ChatLog isUserTurn={isUserTurn} />
       <div class="flex items-center">
         <input 

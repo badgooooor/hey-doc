@@ -2,6 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { ENV_OBJ } from "../lib/env";
   import { conversationStore, textSpeechStore } from "../stores";
+  import { toast } from "@zerodevx/svelte-toast";
   
   let media: Blob[] = [];
   let mediaRecorder: MediaRecorder | null = null;
@@ -11,16 +12,20 @@
   let isRecording: boolean = false;
 
   onMount(async () => {
-    media = [];
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 		
 		mediaRecorder = new MediaRecorder(stream);
 		mediaRecorder.ondataavailable = (e) => media.push(e.data)
 		mediaRecorder.onstop = function(){
-			const audio = document.querySelector('audio');
-			recordedBlob = new Blob(media, { type: "audio/webm" });
-      recordedObjectURL = window.URL.createObjectURL(recordedBlob)
-			audio.src = recordedObjectURL
+			try {
+        const audio = document.querySelector('audio');
+			  recordedBlob = new Blob(media, { type: "audio/webm" });
+        recordedObjectURL = window.URL.createObjectURL(recordedBlob);
+			  audio.src = recordedObjectURL;
+      } catch (err) {
+        toast.push('Error occured during recording, try again', { duration: 2000 })
+      }
+      media = [];
 		}
   })
 

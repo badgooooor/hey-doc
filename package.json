@@ -22,6 +22,7 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
-    "@sveltejs/adapter-auto": "^2.1.0"
+    "@sveltejs/adapter-auto": "^2.1.0",
+    "@zerodevx/svelte-toast": "^0.9.5"
   }
 }

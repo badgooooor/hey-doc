@@ -4,6 +4,7 @@ specifiers:
   '@sveltejs/adapter-auto': ^2.1.0
   '@sveltejs/vite-plugin-svelte': ^2.4.2
   '@tsconfig/svelte': ^5.0.0
+  '@zerodevx/svelte-toast': ^0.9.5
   autoprefixer: ^10.4.14
   postcss: ^8.4.27
   svelte: ^4.0.5
@@ -15,6 +16,7 @@ specifiers:
 
 dependencies:
   '@sveltejs/adapter-auto': 2.1.0_@sveltejs+kit@1.22.3
+  '@zerodevx/svelte-toast': 0.9.5_svelte@4.1.1
 
 devDependencies:
   '@sveltejs/vite-plugin-svelte': 2.4.3_svelte@4.1.1+vite@4.4.7
@@ -355,6 +357,14 @@ packages:
   /@types/pug/2.0.6:
     resolution: {integrity: sha512-SnHmG9wN1UVmagJOnyo/qkk0Z7gejYxOYYmaAwr5u2yFYfsupN3sg10kyzN8Hep/2zbHxCnsumxOoRIRMBwKCg==}
     dev: true
+
+  /@zerodevx/svelte-toast/0.9.5_svelte@4.1.1:
+    resolution: {integrity: sha512-JLeB/oRdJfT+dz9A5bgd3Z7TuQnBQbeUtXrGIrNWMGqWbabpepBF2KxtWVhL2qtxpRqhae2f6NAOzH7xs4jUSw==}
+    peerDependencies:
+      svelte: ^3.57.0 || ^4.0.0
+    dependencies:
+      svelte: 4.1.1
+    dev: false
 
   /acorn/8.10.0:
     resolution: {integrity: sha512-F0SAmZ8iUtS//m8DmCTA0jlh6TDKkHQyK6xc6V4KDTyZKA9dnvX9/3sRTVQrWm79glUAZbnmmNcdYwUIHWVybw==}
