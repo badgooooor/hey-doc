@@ -10,20 +10,28 @@
   let fullConversationLogs: ConversationLog[] = [];
 
   let userChatCount = 0;
+  let assistantVoiceObjectURL: string | null = null;
+
+  let isUserTurn = true;
 
   const unsubscirbeConversationStore = conversationStore.subscribe(val => fullConversationLogs = val)
-  onDestroy(unsubscirbeConversationStore)
+  onDestroy(unsubscirbeConversationStore);
 
   const unsubscribeTextSpeechStore = textSpeechStore.subscribe(val => message = val);
-  onDestroy(unsubscribeTextSpeechStore)
+  onDestroy(unsubscribeTextSpeechStore);
 
   const unsubscribeChatLogStore = displayedConversationStore.subscribe(val => chatLogs = val);
   onDestroy(unsubscribeChatLogStore);
 
   const unsubscirbeUserChatCountStore = userChatCountStore.subscribe(val => userChatCount = val);
-  onDestroy(unsubscirbeUserChatCountStore)
+  onDestroy(unsubscirbeUserChatCountStore);
+
+  onDestroy(() => {
+    conversationStore.set([])
+  })
 
   onMount(async () => {
+    isUserTurn = false;
     const initialConversationResponse = await postConversation({
       "scenario": "outbound/appointment-reminder",
       "conversation": [
@@ -40,11 +48,12 @@
         content: initialConversationResponse.responseText
       }]);
     }
+    isUserTurn = true;
   })
 
   $: userChatCount && sendConversation();
-
   async function sendConversation() {
+    isUserTurn = false;
     const conversationResponse = await postConversation({
       "scenario": "outbound/appointment-reminder",
       "conversation": fullConversationLogs
@@ -55,6 +64,20 @@
         role: 'assistant',
         content: conversationResponse.responseText.toString()
       }]);
+
+      assistantVoiceObjectURL = conversationResponse.audioBlobObjectURL;
+    }
+    isUserTurn = true;
+  }
+
+  $: console.log('isuserturn', isUserTurn)
+
+  $: assistantVoiceObjectURL && playAssistantVoice();
+  function playAssistantVoice() {
+    if (assistantVoiceObjectURL !== null) {
+      const audio = document.querySelector('audio');
+      audio.src = assistantVoiceObjectURL
+      audio.play()
     }
   }
 
@@ -86,6 +109,7 @@
         />
         <Recording />
         <button 
+          disabled={!isUserTurn}
           on:click={onSendMessageClick}
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline ml-2"
         >Send message</button>

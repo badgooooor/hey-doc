@@ -28,9 +28,13 @@ export const postConversation = async (body: PostConversationRequestBody) => {
       response.headers.get("X-Conversation-Summary")
     );
 
+    const audioBlob = await response.blob();
+    const audioBlobObjectURL = window.URL.createObjectURL(audioBlob);
+    console.log("kuy", audioBlob);
     return {
       responseText,
       conversationSummary,
+      audioBlobObjectURL,
     };
   } else {
     return null;
