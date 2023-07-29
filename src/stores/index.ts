@@ -6,7 +6,7 @@ export const conversationStore = writable<ConversationLog[]>([]);
 export const displayedConversationStore = derived(
   conversationStore,
   ($conversationLogs) => {
-    return $conversationLogs.filter((log) => log.content.length > 0);
+    return $conversationLogs.filter((log) => log.content.length > 0) ?? [];
   }
 );
 
