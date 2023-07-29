@@ -1,17 +1,62 @@
 <script lang="ts">
-  import { onDestroy } from "svelte";
-  import { chatLogStore, pushChatLog, textSpeechStore } from "./stores";
+  import { onDestroy, onMount } from "svelte";
+  import { conversationStore, displayedConversationStore, pushChatLog, textSpeechStore, userChatCountStore } from "./stores";
   import Recording from "./components/Recording.svelte";
-  import type { DisplayChatLog } from "./types";
+  import type { ConversationLog } from "./types";
+  import { postConversation } from "./services";
 
   let message = ''
-  let chatLogs: DisplayChatLog[] = [];
+  let chatLogs: ConversationLog[] = [];
+  let fullConversationLogs: ConversationLog[] = [];
+
+  let userChatCount = 0;
+
+  const unsubscirbeConversationStore = conversationStore.subscribe(val => fullConversationLogs = val)
+  onDestroy(unsubscirbeConversationStore)
 
   const unsubscribeTextSpeechStore = textSpeechStore.subscribe(val => message = val);
   onDestroy(unsubscribeTextSpeechStore)
 
-  const unsubscribeChatLogStore = chatLogStore.subscribe(val => chatLogs = val);
+  const unsubscribeChatLogStore = displayedConversationStore.subscribe(val => chatLogs = val);
   onDestroy(unsubscribeChatLogStore);
+
+  const unsubscirbeUserChatCountStore = userChatCountStore.subscribe(val => userChatCount = val);
+  onDestroy(unsubscirbeUserChatCountStore)
+
+  onMount(async () => {
+    const initialConversationResponse = await postConversation({
+      "scenario": "outbound/appointment-reminder",
+      "conversation": [
+        {
+          "role": "user",
+          "content": ""
+        }
+      ]
+    })
+    
+    if (initialConversationResponse !== null) {
+      conversationStore.set([...chatLogs, {
+        role: 'assistant',
+        content: initialConversationResponse.responseText
+      }]);
+    }
+  })
+
+  $: userChatCount && sendConversation();
+
+  async function sendConversation() {
+    const conversationResponse = await postConversation({
+      "scenario": "outbound/appointment-reminder",
+      "conversation": fullConversationLogs
+    })
+
+    if (conversationResponse !== null) {
+      conversationStore.set([...fullConversationLogs, {
+        role: 'assistant',
+        content: conversationResponse.responseText.toString()
+      }]);
+    }
+  }
 
   function onSendMessageClick() {
     pushChatLog(chatLogs, {
