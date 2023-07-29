@@ -24,18 +24,13 @@ export const postConversation = async (body: PostConversationRequestBody) => {
 
   if (response.status === 200) {
     const responseText: string = response.headers.get("X-Message");
-    const conversationSummary: ConversationSummaryResponse = JSON.parse(
-      response.headers.get("X-Conversation-Summary")
-    );
 
     const buffer = await response.arrayBuffer();
     const audioBlob = new Blob([buffer], { type: "audio/wav" });
-    // console.log("blob", text);
 
     const audioBlobObjectURL = window.URL.createObjectURL(audioBlob);
     return {
       responseText,
-      conversationSummary,
       audioBlobObjectURL,
     };
   } else {
