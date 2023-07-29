@@ -4,6 +4,7 @@
   import Recording from "./components/Recording.svelte";
   import type { ConversationLog } from "./types";
   import { postConversation } from "./services";
+  import ChatLog from "./components/ChatLog.svelte";
 
   let message = ''
   let chatLogs: ConversationLog[] = [];
@@ -70,15 +71,13 @@
     isUserTurn = true;
   }
 
-  $: console.log('isuserturn', isUserTurn)
-
   $: assistantVoiceObjectURL && playAssistantVoice();
   function playAssistantVoice() {
-    if (assistantVoiceObjectURL !== null) {
-      const audio = document.querySelector('audio');
-      audio.src = assistantVoiceObjectURL
-      audio.play()
-    }
+    if (assistantVoiceObjectURL === null) return;
+      
+    const audio = document.querySelector('audio');
+    audio.src = assistantVoiceObjectURL;
+    audio.play();
   }
 
   function onSendMessageClick() {
@@ -96,11 +95,12 @@
   </div>
   <div class="flex justify-center items-center h-[calc(100vh-128px)] mx-8 my-8">
     <div class="w-4/5">
-      <div class="flex flex-col h-64 w-full overflow-auto mb-4 p-2 border-2 border-sky-500 rounded-md shadow">
+      <!-- <div class="flex flex-col h-64 w-full overflow-auto mb-4 p-2 border-2 border-sky-500 rounded-md shadow">
         {#each chatLogs as chatLog}
           <p class="break-word mb-2"><span class="font-bold">{chatLog.role}:</span> {chatLog.content}</p>
         {/each}
-      </div>
+      </div> -->
+      <ChatLog isUserTurn={isUserTurn} />
       <div class="flex items-center">
         <input 
           bind:value={message} 
