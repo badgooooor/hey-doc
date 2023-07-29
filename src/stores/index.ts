@@ -1,14 +1,32 @@
-import { writable } from "svelte/store";
-import type { DisplayChatLog } from "../types";
+import { derived, writable } from "svelte/store";
+import type { ConversationLog } from "../types";
 
-export const chatLogStore = writable<DisplayChatLog[]>([]);
+export const conversationStore = writable<ConversationLog[]>([]);
+
+export const displayedConversationStore = derived(
+  conversationStore,
+  ($conversationLogs) => {
+    return $conversationLogs.filter((log) => log.content.length > 0);
+  }
+);
+
+export const userChatCountStore = derived(
+  conversationStore,
+  ($conversationLogs) => {
+    return $conversationLogs.filter(
+      (log) => log.content.length > 0 && log.role === "user"
+    ).length;
+  }
+);
+
+export const chatLogStore = writable<ConversationLog[]>([]);
 
 export const pushChatLog = (
-  chatLogs: DisplayChatLog[],
-  updatingChatLog: DisplayChatLog
+  chatLogs: ConversationLog[],
+  updatingChatLog: ConversationLog
 ): void => {
   const updatedChatLogs = [...chatLogs, updatingChatLog];
-  chatLogStore.set(updatedChatLogs);
+  conversationStore.set(updatedChatLogs);
 };
 
 export const textSpeechStore = writable<string | null>(null);
