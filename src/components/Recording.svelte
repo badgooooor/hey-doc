@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import { ENV_OBJ } from "../lib/env";
-  import { textSpeechStore } from "../stores";
+  import { conversationStore, textSpeechStore } from "../stores";
   
   let media: Blob[] = [];
   let mediaRecorder: MediaRecorder | null = null;
@@ -14,7 +14,6 @@
     media = [];
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 		
-    console.log(MediaRecorder.isTypeSupported("audio/webm"))
 		mediaRecorder = new MediaRecorder(stream);
 		mediaRecorder.ondataavailable = (e) => media.push(e.data)
 		mediaRecorder.onstop = function(){
