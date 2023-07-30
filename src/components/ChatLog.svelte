@@ -10,11 +10,11 @@
   onDestroy(unsubscribeChatLogStore);
 </script>
 
-<div class="flex flex-col h-64 w-full overflow-auto mb-4 p-2 border-2 border-sky-500 rounded-md shadow">
+<div class="flex flex-col h-64 w-full overflow-auto mb-4 p-2 border-2 border-slate-900 bg-slate-900 rounded-md shadow">
   {#each chatLogs as chatLog}
-    <p class="break-word mb-2"><span class="font-bold">{chatLog.role}:</span> {chatLog.content}</p>
+    <p class="break-word mb-2 text-white"><span class="font-bold">{chatLog.role}:</span> {chatLog.content}</p>
   {/each}
   {#if !isUserTurn}
-    <p>Assistant is replying. Please wait . . . </p>
+    <p class="loading text-white">Assistant is replying. Please wait</p>
   {/if}
 </div>

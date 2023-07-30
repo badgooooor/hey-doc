@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@sveltejs/adapter-auto': ^2.1.0
+  '@sveltejs/kit': ^1.22.3
   '@sveltejs/vite-plugin-svelte': ^2.4.2
   '@tsconfig/svelte': ^5.0.0
   '@zerodevx/svelte-toast': ^0.9.5
@@ -16,6 +17,7 @@ specifiers:
 
 dependencies:
   '@sveltejs/adapter-auto': 2.1.0_@sveltejs+kit@1.22.3
+  '@sveltejs/kit': 1.22.3_svelte@4.1.1+vite@4.4.7
   '@zerodevx/svelte-toast': 0.9.5_svelte@4.1.1
 
 devDependencies:

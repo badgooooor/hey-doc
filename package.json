@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@sveltejs/adapter-auto": "^2.1.0",
+    "@sveltejs/kit": "^1.22.3",
     "@zerodevx/svelte-toast": "^0.9.5"
   }
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { ENV_OBJ } from "../lib/env";
-  import { conversationStore, textSpeechStore } from "../stores";
+  import { textSpeechStore } from "../stores";
   import { toast } from "@zerodevx/svelte-toast";
   
   let media: Blob[] = [];
@@ -72,7 +72,7 @@
 
   {#if !isRecording}
     <button 
-      class="bg-white-500 border-red-500 rounded-md border-2 hover:bg-red-700 hover:text-white hover:bg-red-700 text-red-500 font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline ml-2"
+      class="bg-white-500 border-red-500 bg-white rounded-md border-2 hover:bg-red-700 hover:text-white hover:bg-red-700 text-red-500 font-bold py-2 px-2 rounded focus:outline-none focus:shadow-outline ml-2"
       on:click={startRecording}
     >Record
     </button>
